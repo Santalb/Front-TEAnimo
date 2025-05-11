@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import Header from './shared/Header';
+import Footer from './shared/Footer';
 
 const Report = () => {
   const [responses, setResponses] = useState([]);
@@ -8,8 +9,6 @@ const Report = () => {
   const [qchatRespuestas, setQchatRespuestas] = useState([]);
   const [acumComunicativas, setAcumComunicativas] = useState([]);
   const [acumSociales, setAcumSociales] = useState([]);
-  const [porcentajeCom, setPorcentajeCom] = useState(0);
-  const [porcentajeSoc, setPorcentajeSoc] = useState(0);
   const [email, setEmail] = useState('');
   const [pdfUrl, setPdfUrl] = useState(null);
 
@@ -21,16 +20,14 @@ const Report = () => {
       setQchatRespuestas(storedData.qchatRespuestas || []);
       setAcumComunicativas(storedData.acumComunicativas || []);
       setAcumSociales(storedData.acumSociales || []);
-      setPorcentajeCom(storedData.porcentajeComunicativas || 0);
-      setPorcentajeSoc(storedData.porcentajeSociales || 0);
+      /*
       console.log("📄 cargado en nueva pestaña");
       console.log("responses:", storedData.responses);
       console.log("questions:", storedData.questions);
       console.log("qchatRespuestas:", storedData.qchatRespuestas);
       console.log("acumComunicativas:", storedData.acumComunicativas);
       console.log("acumSociales:", storedData.acumSociales);
-      console.log("%com:", storedData.porcentajeComunicativas);
-      console.log("%soc:", storedData.porcentajeSociales);
+      */
     }
   }, []);
 
@@ -162,29 +159,26 @@ const Report = () => {
 
   return (
     <div className="p-8 space-y-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-800">Informe de Respuestas</h1>
-        <div className="flex items-center gap-3">
-          <input
-            type="email"
-            placeholder="Ingresa tu correo"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border border-gray-300 rounded px-4 py-2"
-          />
-          <button
-            onClick={handleSendEmail}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 shadow"
-          >
-            Enviar al correo
-          </button>
-        </div>
-      </div>
+
+      <Header
+        title="Informe de Respuestas"
+        subtitle="Sistema de Evaluación de Autismo Infantil"
+        showInput
+        inputValue={email}
+        onInputChange={(e) => setEmail(e.target.value)}
+        showButton
+        buttonText="Enviar al correo"
+        onButtonClick={handleSendEmail}
+      />
+
       {pdfUrl && (
         <div className="mt-6 border rounded-xl overflow-hidden shadow">
-          <iframe src={pdfUrl} title="Vista previa del informe" className="w-full h-[750px]" />
+          <iframe src={pdfUrl} title="Vista previa del informe" className="w-full h-[800px]" />
         </div>
       )}
+
+      <Footer />
+
     </div>
   );
 };

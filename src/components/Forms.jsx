@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { GlobalContext } from '../contexts/GlobalContext';
+import Header from './shared/Header';
+import Footer from './shared/Footer';
+
 
 const questions = [
   { id: 1, text: "¿Cuántos años tiene su hijo/a?", type: "input", options: [] },
@@ -147,7 +150,7 @@ const Forms = ({ onFinish }) => {
     setAcumSociales(acumSociales);
 
 
-    // Debug en consola
+    /* Debug en consola
     console.log("🧠 Q-CHAT respuestas binarias:", qchatRespuestas);
     console.log("📋 Resumen Total:", resumenTotal);
     console.log("💬 Evolución Comunicativas:", evolComunicativas);
@@ -157,6 +160,7 @@ const Forms = ({ onFinish }) => {
     console.log("% Sociales:", habilidadesSociales);
     console.log("📈 Acumulado Comunicativas:", acumComunicativas);
     console.log("📉 Acumulado Sociales:", acumSociales);
+    */
 
     // Guardar en localStorage
     localStorage.setItem('reportData', JSON.stringify({
@@ -169,7 +173,6 @@ const Forms = ({ onFinish }) => {
       porcentajeSociales: habilidadesSociales
     }))
 
-    alert(`Q-CHAT: ${qchatScore}/10 • Comunicativas: ${habilidadesComunicativas}% • Sociales: ${habilidadesSociales}%`);
     onFinish();
   };
 
@@ -201,16 +204,11 @@ const Forms = ({ onFinish }) => {
     <div className="flex flex-col min-h-screen justify-between">
       <div className="max-w-7xl w-full mx-auto space-y-8 flex-grow">
 
-        <header className="flex justify-between items-center bg-white rounded-2xl p-8 shadow-xl">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                Formulario de Evaluación
-              </h1>
-            </div>
-            <p className="text-gray-600 text-lg">Sistema de Evaluación de Autismo Infantil</p>
-          </div>
-        </header>
+        <Header
+          title="Formulario de Evaluación"
+          subtitle="Sistema de Evaluación de Autismo Infantil"
+        />
+
 
         <div className="flex items-start">
           <div className="flex-1 flex items-center justify-center p-4">
@@ -349,9 +347,7 @@ const Forms = ({ onFinish }) => {
           </div>
         </div>
 
-        <footer className="text-center text-gray-500 text-sm mt-10 w-full">
-          <p>© 2025 TESIS I • LEON ALEXIS - CASTRO ERNESTO</p>
-        </footer>
+        <Footer />
 
       </div>
     </div>

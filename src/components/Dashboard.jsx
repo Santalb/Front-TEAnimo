@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { ExternalLink, AlertCircle } from 'lucide-react';
 import { GlobalContext } from '../contexts/GlobalContext';
+import Header from './shared/Header';
+import Footer from './shared/Footer';
 
 const Dashboard = () => {
   const {
@@ -30,24 +32,18 @@ const Dashboard = () => {
   const pathSoc = socScaled.map((v, i) => `${5 + i * (95 / 17)} ${100 - v * 100 - 7 }`).join(' L ');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br p-8">
       <div className="max-w-7xl mx-auto space-y-8" id="dashboard-report">
 
-        <header className="bg-white rounded-2xl p-6 shadow flex flex-col gap-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-blue-700">Resultado de la Evaluación</h1>
-              <p className="text-gray-600">Sistema de Evaluación de Autismo Infantil</p>
-            </div>
-            <button
-              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-xl hover:bg-blue-50"
-              onClick={() => window.open('/report', '_blank')}
-            >
-              <ExternalLink size={20} />
-              Ver Informe
-            </button>
-          </div>
-        </header>
+        {/* HEADER */}
+        <Header
+          title="Resultado de la Evaluación"
+          subtitle="Sistema de Evaluación de Autismo Infantil"
+          showButton
+          buttonText="Ver Informe"
+          onButtonClick={() => window.open('/report', '_blank')}
+        />
+
 
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
           <AlertCircle className="text-amber-500" size={24} />
@@ -167,9 +163,8 @@ const Dashboard = () => {
         </div>
 
 
-        <footer className="text-center text-gray-500 text-sm mt-12">
-          © 2025 TESIS I • LEON ALEXIS - CASTRO ERNESTO
-        </footer>
+      <Footer />
+      
       </div>
     </div>
   );
