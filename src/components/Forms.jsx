@@ -1,85 +1,182 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { GlobalContext } from '../contexts/GlobalContext';
 
 const questions = [
-  {
-    id: 1,
-    text: "¿Tu hijo te mira cuando lo llamas por su nombre?",
-    options: ['Siempre', 'Usualmente', 'A veces', 'Raramente', 'Nunca']
-  },
-  {
-    id: 2,
-    text: "¿Qué tan fácil es para ti lograr contacto visual con tu hijo?",
-    options: ['Muy fácil', 'Bastante fácil', 'Bastante difícil', 'Muy difícil', 'Imposible']
-  },
-  {
-    id: 3,
-    text: "¿Tu hijo señala para indicar que quiere algo?",
-    options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca']
-  },
-  {
-    id: 4,
-    text: "¿Tu hijo señala para compartir interés contigo?",
-    options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca']
-  },
-  {
-    id: 5,
-    text: "¿Tu hijo finge?",
-    options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca']
-  },
-  {
-    id: 6,
-    text: "¿Tu hijo sigue con la mirada hacia donde tú estás mirando?",
-    options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca']
-  },
-  {
-    id: 7,
-    text: "¿Tu hijo muestra señales de querer consolar?",
-    options: ['Siempre', 'Usualmente', 'A veces', 'Raramente', 'Nunca']
-  },
-  {
-    id: 8,
-    text: "¿Cómo describirías las primeras palabras de tu hijo?",
-    options: ['Muy típicas', 'Bastante típicas', 'Ligeramente inusuales', 'Muy inusuales', 'Mi hijo no habla']
-  },
-  {
-    id: 9,
-    text: "¿Tu hijo usa gestos simples?",
-    options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca']
-  },
-  {
-    id: 10,
-    text: "¿Tu hijo se queda mirando fijamente a la nada sin un propósito aparente?",
-    options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca']
-  }
+  { id: 1, text: "¿Cuántos años tiene su hijo/a?", type: "input", options: [] },
+  { id: 2, text: "¿Cuál es el género de su hijo/a?", type: "select", options: ["Masculino", "Femenino"] },
+  { id: 3, text: "¿Tu hijo te mira cuando lo llamas por su nombre?", type: "default", options: ['Siempre', 'Usualmente', 'A veces', 'Raramente', 'Nunca'] },
+  { id: 4, text: "¿Qué tan fácil es para ti lograr contacto visual con tu hijo?", type: "default", options: ['Muy fácil', 'Bastante fácil', 'Bastante difícil', 'Muy difícil', 'Imposible'] },
+  { id: 5, text: "¿Tu hijo señala para indicar que quiere algo?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 6, text: "¿Tu hijo señala para compartir interés contigo?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 7, text: "¿Tu hijo finge?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 8, text: "¿Tu hijo sigue con la mirada hacia donde tú estás mirando?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 9, text: "¿Tu hijo muestra señales de querer consolar?", type: "default", options: ['Siempre', 'Usualmente', 'A veces', 'Raramente', 'Nunca'] },
+  { id: 10, text: "¿Cómo describirías las primeras palabras de tu hijo?", type: "default", options: ['Muy típicas', 'Bastante típicas', 'Ligeramente inusuales', 'Muy inusuales', 'Mi hijo no habla'] },
+  { id: 11, text: "¿Tu hijo usa gestos simples?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 12, text: "¿Tu hijo se queda mirando fijamente a la nada sin un propósito aparente?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 13, text: "¿Su hijo/a tiene dificultades para hablar o expresar ideas claramente?", type: "yesno", options: ["Sí", "No"] },
+  { id: 14, text: "¿Su hijo/a tiene dificultades para aprender?", type: "yesno", options: ["Sí", "No"] },
+  { id: 15, text: "¿Su hijo/a tiene algún trastorno genético?", type: "yesno", options: ["Sí", "No"] },
+  { id: 16, text: "¿Su hijo/a presenta síntomas de depresión?", type: "yesno", options: ["Sí", "No"] },
+  { id: 17, text: "¿Ha notado un retraso en el desarrollo de su hijo/a?", type: "yesno", options: ["Sí", "No"] },
+  { id: 18, text: "¿Su hijo/a tiene problemas de comportamiento o sociales?", type: "yesno", options: ["Sí", "No"] },
+  { id: 19, text: "¿Su hijo/a muestra señales de ansiedad?", type: "yesno", options: ["Sí", "No"] },
+  { id: 20, text: "¿Alguien en su familia cercana ha sido diagnosticado con autismo?", type: "yesno", options: ["Sí", "No"] }
 ];
 
-const Forms = ({ setScoreData }) => {
-  const [responses, setResponses] = useState(Array(10).fill(null));
+const Forms = ({ onFinish }) => {
+  const [responses, setResponses] = useState(Array(questions.length).fill(null));
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  // Función reutilizable para calcular el score
-  const calculateScore = (resps) => {
-    return resps.reduce((acc, val, idx) => {
+  const {
+    setScoreData,
+    setQchatRespuestas,
+    setResumenTotal,
+    setEvolComunicativas,
+    setEvolSociales,
+    setPorcentajeComunicativas,
+    setPorcentajeSociales,
+    setAcumComunicativas,
+    setAcumSociales
+  } = useContext(GlobalContext);
+
+
+  const calculateScore = (resps) =>
+    resps.slice(2, 12).reduce((acc, val, idx) => {
       if (val === null) return acc;
-      if (idx < 9) return acc + (val >= 2 ? 1 : 0);   // Preguntas 1–9: C, D, E valen 1
-      if (idx === 9) return acc + (val <= 2 ? 1 : 0); // Pregunta 10: A, B, C valen 1
+      if (idx < 9) return acc + (val >= 2 ? 1 : 0);
+      if (idx === 9) return acc + (val <= 2 ? 1 : 0);
       return acc;
     }, 0);
+
+  const calculateHabilidadPorcentajes = (resps) => {
+    let sociales = 0;
+    let comunicativas = 0;
+
+    if (resps[4] >= 2) sociales += 20;
+    if (resps[9] >= 2) sociales += 20;
+    if (resps[10] >= 2) sociales += 20;
+    if (resps[12] === 0) sociales += 25;
+    if (resps[13] === 0) sociales += 15;
+
+    if (resps[2] >= 2) comunicativas += 10;
+    if (resps[3] >= 2) comunicativas += 10;
+    if (resps[5] >= 2) comunicativas += 10;
+    if (resps[6] >= 2) comunicativas += 15;
+    if (resps[7] >= 2) comunicativas += 15;
+    if (resps[8] >= 2) comunicativas += 15;
+    if (resps[17] === 0) comunicativas += 20;
+    if (resps[18] === 0) comunicativas += 5;
+
+    return {
+      habilidadesSociales: sociales,
+      habilidadesComunicativas: comunicativas
+    };
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const qchatScore = calculateScore(responses);
+    const { habilidadesSociales, habilidadesComunicativas } = calculateHabilidadPorcentajes(responses);
+
+    const qchatRespuestas = responses.slice(2, 12).map((val, idx) => {
+      if (val === null) return 0;
+      if (idx < 9) return val >= 2 ? 1 : 0;
+      if (idx === 9) return val <= 2 ? 1 : 0;
+      return 0;
+    });
+
+    let acumComunicativas = [];
+    let acumSociales = [];
+    let comTotal = 0;
+    let socTotal = 0;
+
+    // Comunicación
+    if (responses[2] >= 2) comTotal += 10;
+    acumComunicativas.push(comTotal);
+    if (responses[3] >= 2) comTotal += 10;
+    acumComunicativas.push(comTotal);
+    if (responses[5] >= 2) comTotal += 10;
+    acumComunicativas.push(comTotal);
+    if (responses[6] >= 2) comTotal += 15;
+    acumComunicativas.push(comTotal);
+    if (responses[7] >= 2) comTotal += 15;
+    acumComunicativas.push(comTotal);
+    if (responses[8] >= 2) comTotal += 15;
+    acumComunicativas.push(comTotal);
+    if (responses[17] === 0) comTotal += 20;
+    acumComunicativas.push(comTotal);
+    if (responses[18] === 0) comTotal += 5;
+    acumComunicativas.push(comTotal);
+
+    // Sociales
+    if (responses[4] >= 2) socTotal += 20;
+    acumSociales.push(socTotal);
+    if (responses[9] >= 2) socTotal += 20;
+    acumSociales.push(socTotal);
+    if (responses[10] >= 2) socTotal += 20;
+    acumSociales.push(socTotal);
+    if (responses[12] === 0) socTotal += 25;
+    acumSociales.push(socTotal);
+    if (responses[13] === 0) socTotal += 15;
+    acumSociales.push(socTotal);
+
+    const edad = responses[0];
+    const genero = responses[1] === 0 ? 1 : 0; // Masculino = 1, Femenino = 0
+    const preguntasExtras = responses.slice(12);
+    const resumenTotal = [edad, genero, ...qchatRespuestas, qchatScore, ...preguntasExtras];
+
+    const evolComunicativas = [responses[2], responses[3], responses[5], responses[6], responses[7], responses[8], responses[17], responses[18]]
+      .map((r, idx) => idx <= 5 ? (r >= 2 ? 1 : 0) : (r === 0 ? 1 : 0));
+
+    const evolSociales = [responses[4], responses[9], responses[10], responses[12], responses[13]]
+      .map((r, idx) => idx <= 2 ? (r >= 2 ? 1 : 0) : (r === 0 ? 1 : 0));
+
+    // Almacenar en el contexto
+    setScoreData(qchatRespuestas);
+    setQchatRespuestas(qchatRespuestas);
+    setResumenTotal(resumenTotal);
+    setEvolComunicativas(evolComunicativas);
+    setEvolSociales(evolSociales);
+    setPorcentajeComunicativas(habilidadesComunicativas);
+    setPorcentajeSociales(habilidadesSociales);
+    // Guarda en el contexto
+    setAcumComunicativas(acumComunicativas);
+    setAcumSociales(acumSociales);
+
+
+    // Debug en consola
+    console.log("🧠 Q-CHAT respuestas binarias:", qchatRespuestas);
+    console.log("📋 Resumen Total:", resumenTotal);
+    console.log("💬 Evolución Comunicativas:", evolComunicativas);
+    console.log("🤝 Evolución Sociales:", evolSociales);
+    console.log("✅ Puntaje Q-CHAT:", qchatScore);
+    console.log("% Comunicativas:", habilidadesComunicativas);
+    console.log("% Sociales:", habilidadesSociales);
+    console.log("📈 Acumulado Comunicativas:", acumComunicativas);
+    console.log("📉 Acumulado Sociales:", acumSociales);
+
+    // Guardar en localStorage
+    localStorage.setItem('reportData', JSON.stringify({
+      responses,
+      questions,
+      qchatRespuestas,
+      acumComunicativas,
+      acumSociales,
+      porcentajeComunicativas: habilidadesComunicativas,
+      porcentajeSociales: habilidadesSociales
+    }))
+
+    alert(`Q-CHAT: ${qchatScore}/10 • Comunicativas: ${habilidadesComunicativas}% • Sociales: ${habilidadesSociales}%`);
+    onFinish();
   };
 
   const handleChange = (qIndex, oIndex) => {
     const newResponses = [...responses];
     newResponses[qIndex] = oIndex;
     setResponses(newResponses);
-
-    const scores = newResponses.map((val, idx) => {
-      if (val === null) return 0;
-      if (idx < 9) return val >= 2 ? 1 : 0;
-      if (idx === 9) return val <= 2 ? 1 : 0;
-      return 0;
-    });
-    setScoreData(scores);
   };
 
   const handleNext = () => {
@@ -94,17 +191,6 @@ const Forms = ({ setScoreData }) => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const score = calculateScore(responses);
-
-    const message = score > 3
-      ? "Este resultado sugiere que podría ser útil una evaluación multidisciplinaria."
-      : "Este resultado no indica necesariamente la necesidad de evaluación, pero puede consultar a un especialista si tiene dudas.";
-
-    alert(`¡Cuestionario completado!\n\nPuntaje total: ${score}/10\n${message}`);
-  };
-
   const getVisibleQuestions = () => {
     const prevIndex = Math.max(0, currentQuestion - 4);
     const nextEndIndex = Math.min(questions.length, currentQuestion + 4);
@@ -112,10 +198,9 @@ const Forms = ({ setScoreData }) => {
   };
 
   return (
-    <div className=" bg-gradient-to-br from-blue-50 to-blue-100 p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="flex flex-col min-h-screen justify-between">
+      <div className="max-w-7xl w-full mx-auto space-y-8 flex-grow">
 
-        {/* HEAD */}
         <header className="flex justify-between items-center bg-white rounded-2xl p-8 shadow-xl">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -127,13 +212,9 @@ const Forms = ({ setScoreData }) => {
           </div>
         </header>
 
-        <div className="min-h-screen  flex items-start">
-
-          {/* Formulario */}
+        <div className="flex items-start">
           <div className="flex-1 flex items-center justify-center p-4">
             <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-3xl">
-
-              {/* Encabezado Form */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-blue-800">Cuéntanos sobre tu hijo</h2>
                 <span className="text-blue-600 font-semibold">
@@ -147,31 +228,35 @@ const Forms = ({ setScoreData }) => {
                     {questions[currentQuestion].text}
                   </h3>
 
-                  <div className="space-y-3">
-                    {questions[currentQuestion].options.map((option, oIndex) => (
-                      <div key={option} className="relative">
+                  {questions[currentQuestion].type === 'input' ? (
+                    <input
+                      type="number"
+                      min={1}
+                      max={18}
+                      value={responses[currentQuestion] || ''}
+                      onChange={(e) => handleChange(currentQuestion, parseInt(e.target.value) || '')}
+                      className="border border-gray-300 rounded px-3 py-2 w-1/2"
+                      placeholder="Ingrese la edad en años"
+                    />
+                  ) : (
+                    <div className="space-y-3">
+                      {questions[currentQuestion].options.map((option, oIndex) => (
                         <label
-                          className="flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:border-blue-400"
-                          style={{
-                            borderColor:
-                              responses[currentQuestion] === oIndex ? '#1d4ed8' : '#e5e7eb',
-                            backgroundColor:
-                              responses[currentQuestion] === oIndex ? '#eff6ff' : 'white'
-                          }}
+                          key={oIndex}
+                          className={`flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:border-blue-400 ${responses[currentQuestion] === oIndex ? 'bg-blue-100 border-blue-500' : 'border-gray-200'}`}
                         >
                           <input
                             type="radio"
-                            name={`question-${questions[currentQuestion].id}`}
-                            value={oIndex}
+                            name={`question-${currentQuestion}`}
                             checked={responses[currentQuestion] === oIndex}
                             onChange={() => handleChange(currentQuestion, oIndex)}
                             className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                           />
-                          <span className="text-lg text-gray-700">{option}</span>
+                          <span className="text-gray-700">{option}</span>
                         </label>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-between items-center pt-2">
@@ -179,17 +264,16 @@ const Forms = ({ setScoreData }) => {
                     type="button"
                     onClick={handlePrevious}
                     disabled={currentQuestion === 0}
-                    className="flex items-center px-4 py-2 text-blue-600 font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-blue-600 font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 rounded-lg"
                   >
-                    <ChevronLeft className="w-5 h-5 mr-1" />
-                    Anterior
+                    <ChevronLeft className="w-5 h-5 mr-2" /> Anterior
                   </button>
 
                   {currentQuestion === questions.length - 1 ? (
                     <button
                       type="submit"
                       disabled={responses.includes(null)}
-                      className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700"
                     >
                       Finalizar
                     </button>
@@ -198,10 +282,9 @@ const Forms = ({ setScoreData }) => {
                       type="button"
                       onClick={handleNext}
                       disabled={responses[currentQuestion] === null}
-                      className="flex items-center px-4 py-2 text-blue-600 font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                      className="flex items-center px-4 py-2 text-blue-600 font-medium disabled:opacity-50 hover:bg-blue-50 rounded-lg"
                     >
-                      Siguiente
-                      <ChevronRight className="w-5 h-5 ml-1" />
+                      Siguiente <ChevronRight className="w-5 h-5 ml-2" />
                     </button>
                   )}
                 </div>
@@ -209,7 +292,6 @@ const Forms = ({ setScoreData }) => {
             </div>
           </div>
 
-          {/* Vista Lateral Preguntas */}
           <div className="w-56 bg-white shadow-lg p-4 hidden lg:block rounded-xl">
             <h3 className="text-sm font-semibold text-gray-700 mb-4">Preguntas cercanas</h3>
             <div className="space-y-4">
@@ -266,8 +348,8 @@ const Forms = ({ setScoreData }) => {
             </div>
           </div>
         </div>
-        {/* footer */}
-        <footer className="text-center text-gray-500 text-sm">
+
+        <footer className="text-center text-gray-500 text-sm mt-10 w-full">
           <p>© 2025 TESIS I • LEON ALEXIS - CASTRO ERNESTO</p>
         </footer>
 
