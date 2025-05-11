@@ -1,4 +1,3 @@
-// src/contexts/GlobalContext.js
 import React, { createContext, useState } from 'react';
 
 export const GlobalContext = createContext();
@@ -10,10 +9,12 @@ export const GlobalProvider = ({ children }) => {
   const [evolComunicativas, setEvolComunicativas] = useState([]);
   const [evolSociales, setEvolSociales] = useState([]);
   const [porcentajeComunicativas, setPorcentajeComunicativas] = useState(0);
-    const [porcentajeSociales, setPorcentajeSociales] = useState(0);
-    const [acumComunicativas, setAcumComunicativas] = useState([]);
-    const [acumSociales, setAcumSociales] = useState([]);
+  const [porcentajeSociales, setPorcentajeSociales] = useState(0);
+  const [acumComunicativas, setAcumComunicativas] = useState([]);
+  const [acumSociales, setAcumSociales] = useState([]);
 
+  const [horaInicio, setHoraInicio] = useState(null);
+  const [horaFin, setHoraFin] = useState(null);
 
   return (
     <GlobalContext.Provider
@@ -35,7 +36,11 @@ export const GlobalProvider = ({ children }) => {
         acumComunicativas,
         setAcumComunicativas,
         acumSociales,
-        setAcumSociales
+        setAcumSociales,
+        horaInicio,
+        setHoraInicio,
+        horaFin,
+        setHoraFin,
       }}
     >
       {children}

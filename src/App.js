@@ -1,9 +1,8 @@
-// App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Forms from './components/Forms';
-import Report from './components/Report'; // Nuevo componente
+import Report from './components/Report';
 
 function App() {
   const [scoreData, setScoreData] = useState(Array(10).fill(0));

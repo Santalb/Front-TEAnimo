@@ -41,7 +41,10 @@ const Forms = ({ onFinish }) => {
     setPorcentajeComunicativas,
     setPorcentajeSociales,
     setAcumComunicativas,
-    setAcumSociales
+    setAcumSociales,
+    setHoraInicio,
+    setHoraFin,
+    horaInicio
   } = useContext(GlobalContext);
 
 
@@ -80,6 +83,11 @@ const Forms = ({ onFinish }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Calcular tiempo final y duración
+    const fin = new Date();
+    setHoraFin(fin);
+
 
     const qchatScore = calculateScore(responses);
     const { habilidadesSociales, habilidadesComunicativas } = calculateHabilidadPorcentajes(responses);
@@ -129,13 +137,29 @@ const Forms = ({ onFinish }) => {
     const edad = responses[0];
     const genero = responses[1] === 0 ? 1 : 0; // Masculino = 1, Femenino = 0
     const preguntasExtras = responses.slice(12);
-    const resumenTotal = [edad, genero, ...qchatRespuestas, qchatScore, ...preguntasExtras];
 
     const evolComunicativas = [responses[2], responses[3], responses[5], responses[6], responses[7], responses[8], responses[17], responses[18]]
       .map((r, idx) => idx <= 5 ? (r >= 2 ? 1 : 0) : (r === 0 ? 1 : 0));
 
     const evolSociales = [responses[4], responses[9], responses[10], responses[12], responses[13]]
       .map((r, idx) => idx <= 2 ? (r >= 2 ? 1 : 0) : (r === 0 ? 1 : 0));
+
+    const resumenTotal = [
+      edad,
+      genero,
+      ...qchatRespuestas,
+      qchatScore,
+      ...preguntasExtras,
+      socTotal,
+      comTotal,
+      horaInicio?.toLocaleString("es-PE", { timeZone: "America/Lima" }) || '',
+      fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
+    ];
+
+    const Tiempos_Ini_Fin = [
+      horaInicio?.toLocaleString("es-PE", { timeZone: "America/Lima" }) || '',
+      fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
+    ];
 
     // Almacenar en el contexto
     setScoreData(qchatRespuestas);
@@ -145,11 +169,10 @@ const Forms = ({ onFinish }) => {
     setEvolSociales(evolSociales);
     setPorcentajeComunicativas(habilidadesComunicativas);
     setPorcentajeSociales(habilidadesSociales);
-    // Guarda en el contexto
     setAcumComunicativas(acumComunicativas);
     setAcumSociales(acumSociales);
-
-
+    
+    console.log("Duracion de la Evaluacion:", Tiempos_Ini_Fin);
     /* Debug en consola
     console.log("🧠 Q-CHAT respuestas binarias:", qchatRespuestas);
     console.log("📋 Resumen Total:", resumenTotal);
@@ -169,8 +192,10 @@ const Forms = ({ onFinish }) => {
       qchatRespuestas,
       acumComunicativas,
       acumSociales,
+      porcentajeSociales: habilidadesSociales,
       porcentajeComunicativas: habilidadesComunicativas,
-      porcentajeSociales: habilidadesSociales
+      horaInicio: horaInicio?.toLocaleString("es-PE", { timeZone: "America/Lima" }) || '',
+      horaFin: fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
     }))
 
     onFinish();
@@ -183,6 +208,10 @@ const Forms = ({ onFinish }) => {
   };
 
   const handleNext = () => {
+    if (currentQuestion === 0) {
+      const inicio = new Date();
+      setHoraInicio(inicio);
+    }
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     }

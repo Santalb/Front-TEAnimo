@@ -63,7 +63,7 @@ const Dashboard = () => {
                 {qchatRespuestas.map((val, i) => (
                   <circle
                     key={i}
-                    cx={`${i * 10}%`}
+                    cx={`${3 +i * 10}%`}
                     cy={`${100 - (qchatRespuestas.slice(0, i + 1).reduce((a, v) => a + v, 0)) * 10}%`}
                     r="4"
                     fill="#3B82F6"
