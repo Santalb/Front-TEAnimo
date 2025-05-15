@@ -198,6 +198,24 @@ const Forms = ({ onFinish }) => {
       horaFin: fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
     }))
 
+    // Enviar al backend
+    fetch("http://127.0.0.1:8000/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ values: resumenTotal })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("✅ Respuesta del backend:", data);
+        // Ejemplo: puedes guardar data.riesgo_autismo en contexto
+        // setResultadoRiesgo(data.riesgo_autismo);
+      })
+      .catch((err) => {
+        console.error("❌ Error al enviar los datos:", err);
+      });
+
     onFinish();
   };
 
