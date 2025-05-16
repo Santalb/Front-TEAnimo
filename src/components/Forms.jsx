@@ -174,10 +174,9 @@ const Forms = ({ onFinish }) => {
     setAcumSociales(acumSociales);
     
     console.log("Duracion de la Evaluacion:", Tiempos_Ini_Fin);
-    console.log("📋 Resumen Total:", resumenTotal);
     /* Debug en consola
     console.log("🧠 Q-CHAT respuestas binarias:", qchatRespuestas);
-    
+    console.log("📋 Resumen Total:", resumenTotal);
     console.log("💬 Evolución Comunicativas:", evolComunicativas);
     console.log("🤝 Evolución Sociales:", evolSociales);
     console.log("✅ Puntaje Q-CHAT:", qchatScore);
@@ -212,6 +211,11 @@ const Forms = ({ onFinish }) => {
     .then((data) => {
       console.log("✅ Respuesta del backend:", data);
       setResultadoRiesgo(data.riesgo_autismo);
+
+      // Actualizar solo resultadoRiesgo en localStorage
+      const currentReportData = JSON.parse(localStorage.getItem('reportData')) || {};
+      currentReportData.resultadoRiesgo = data.riesgo_autismo;
+      localStorage.setItem('reportData', JSON.stringify(currentReportData));
     })
     .catch((err) => {
       console.error("❌ Error al enviar los datos:", err);
