@@ -1,8 +1,18 @@
-// src/components/dash-comp/skills-delay.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
 
 const SkillsDelay = ({ communicativeSkills, socialInteractiveSkills }) => {
+  const diff = Math.abs(communicativeSkills - socialInteractiveSkills);
+
+  let perfilMensaje = '';
+  if (diff <= 10) {
+    perfilMensaje = 'Perfil Mixto: se sugiere una evaluación clínica personalizada.';
+  } else if (communicativeSkills > socialInteractiveSkills) {
+    perfilMensaje = 'Perfil Comunicativo: se recomienda apoyo en habilidades comunicativas.';
+  } else {
+    perfilMensaje = 'Perfil Interactivo-Social: se recomienda apoyo en habilidades sociales.';
+  }
+
   return (
     <motion.div 
       className="bg-white rounded-2xl p-8 shadow-xl"
@@ -48,7 +58,7 @@ const SkillsDelay = ({ communicativeSkills, socialInteractiveSkills }) => {
 
       <div className="mt-6 p-4 bg-blue-50 rounded-md text-center">
         <p className="text-sm text-blue-800">
-          Perfil Mixto: se sugiere una evaluación clínica personalizada.
+          {perfilMensaje}
         </p>
       </div>
     </motion.div>
