@@ -10,6 +10,7 @@ const Dashboard = () => {
     porcentajeComunicativas,
     porcentajeSociales,
     acumComunicativas,
+    resultadoRiesgo,
     acumSociales
   } = useContext(GlobalContext);
 
@@ -73,14 +74,14 @@ const Dashboard = () => {
               </svg>
             </div>
             <div className="flex justify-between text-xs text-gray-500 mt-2">
-              {qchatRespuestas.map((_, i) => <span key={i}>P{i + 1}</span>)}
+              {qchatRespuestas.map((_, i) => <span key={i}>A{i + 1}</span>)}
             </div>
           </div>
 
           <div className="bg-white rounded-2xl p-8 shadow-xl">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Porcentaje riesgo TEA</h2>
             <div className="text-center">
-              <div className="text-6xl font-bold text-blue-700 mb-4">65%</div>
+              <div className="text-6xl font-bold text-blue-700 mb-4">{resultadoRiesgo}%</div>
               <p className="text-gray-700 font-medium mb-2">Riesgo Significativo</p>
               <p className="text-sm text-gray-600">Se recomienda evaluación profesional detallada</p>
             </div>

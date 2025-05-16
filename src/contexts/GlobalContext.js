@@ -12,7 +12,7 @@ export const GlobalProvider = ({ children }) => {
   const [porcentajeSociales, setPorcentajeSociales] = useState(0);
   const [acumComunicativas, setAcumComunicativas] = useState([]);
   const [acumSociales, setAcumSociales] = useState([]);
-
+  const [resultadoRiesgo, setResultadoRiesgo] = useState(0);
   const [horaInicio, setHoraInicio] = useState(null);
   const [horaFin, setHoraFin] = useState(null);
 
@@ -41,6 +41,8 @@ export const GlobalProvider = ({ children }) => {
         setHoraInicio,
         horaFin,
         setHoraFin,
+        resultadoRiesgo,
+        setResultadoRiesgo
       }}
     >
       {children}

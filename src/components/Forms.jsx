@@ -44,6 +44,7 @@ const Forms = ({ onFinish }) => {
     setAcumSociales,
     setHoraInicio,
     setHoraFin,
+    setResultadoRiesgo,
     horaInicio
   } = useContext(GlobalContext);
 
@@ -173,9 +174,10 @@ const Forms = ({ onFinish }) => {
     setAcumSociales(acumSociales);
     
     console.log("Duracion de la Evaluacion:", Tiempos_Ini_Fin);
+    console.log("📋 Resumen Total:", resumenTotal);
     /* Debug en consola
     console.log("🧠 Q-CHAT respuestas binarias:", qchatRespuestas);
-    console.log("📋 Resumen Total:", resumenTotal);
+    
     console.log("💬 Evolución Comunicativas:", evolComunicativas);
     console.log("🤝 Evolución Sociales:", evolSociales);
     console.log("✅ Puntaje Q-CHAT:", qchatScore);
@@ -209,8 +211,7 @@ const Forms = ({ onFinish }) => {
     .then((res) => res.json())
     .then((data) => {
       console.log("✅ Respuesta del backend:", data);
-      // Ejemplo: puedes guardar data.riesgo_autismo en contexto
-      // setResultadoRiesgo(data.riesgo_autismo);
+      setResultadoRiesgo(data.riesgo_autismo);
     })
     .catch((err) => {
       console.error("❌ Error al enviar los datos:", err);
