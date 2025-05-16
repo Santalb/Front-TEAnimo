@@ -63,8 +63,8 @@ const Forms = ({ onFinish }) => {
     if (resps[4] >= 2) sociales += 20;
     if (resps[9] >= 2) sociales += 20;
     if (resps[10] >= 2) sociales += 20;
-    if (resps[12] === 0) sociales += 25;
-    if (resps[13] === 0) sociales += 15;
+    if (resps[12] === 1) sociales += 25;
+    if (resps[13] === 1) sociales += 15;
 
     if (resps[2] >= 2) comunicativas += 10;
     if (resps[3] >= 2) comunicativas += 10;
@@ -72,8 +72,8 @@ const Forms = ({ onFinish }) => {
     if (resps[6] >= 2) comunicativas += 15;
     if (resps[7] >= 2) comunicativas += 15;
     if (resps[8] >= 2) comunicativas += 15;
-    if (resps[17] === 0) comunicativas += 20;
-    if (resps[18] === 0) comunicativas += 5;
+    if (resps[17] === 1) comunicativas += 20;
+    if (resps[18] === 1) comunicativas += 5;
 
     return {
       habilidadesSociales: sociales,
@@ -117,9 +117,9 @@ const Forms = ({ onFinish }) => {
     acumComunicativas.push(comTotal);
     if (responses[8] >= 2) comTotal += 15;
     acumComunicativas.push(comTotal);
-    if (responses[17] === 0) comTotal += 20;
+    if (responses[17] === 1) comTotal += 20;
     acumComunicativas.push(comTotal);
-    if (responses[18] === 0) comTotal += 5;
+    if (responses[18] === 1) comTotal += 5;
     acumComunicativas.push(comTotal);
 
     // Sociales
@@ -129,9 +129,9 @@ const Forms = ({ onFinish }) => {
     acumSociales.push(socTotal);
     if (responses[10] >= 2) socTotal += 20;
     acumSociales.push(socTotal);
-    if (responses[12] === 0) socTotal += 25;
+    if (responses[12] === 1) socTotal += 25;
     acumSociales.push(socTotal);
-    if (responses[13] === 0) socTotal += 15;
+    if (responses[13] === 1) socTotal += 15;
     acumSociales.push(socTotal);
 
     const edad = responses[0];
