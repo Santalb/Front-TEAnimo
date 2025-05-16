@@ -127,8 +127,8 @@ const Forms = ({ onFinish }) => {
       ...qchatRespuestas,
       qchatScore,
       ...preguntasExtras,
-      socTotal,
       comTotal,
+      socTotal,
       horaInicio?.toLocaleString("es-PE", { timeZone: "America/Lima" }) || '',
       fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
     ];
@@ -156,8 +156,8 @@ const Forms = ({ onFinish }) => {
       qchatRespuestas,
       acumComunicativas,
       acumSociales,
-      porcentajeSociales: habilidadesSociales,
       porcentajeComunicativas: habilidadesComunicativas,
+      porcentajeSociales: habilidadesSociales,
       horaInicio: horaInicio?.toLocaleString("es-PE", { timeZone: "America/Lima" }) || '',
       horaFin: fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
     }))
@@ -171,6 +171,7 @@ const Forms = ({ onFinish }) => {
   })
     .then((res) => res.json())
     .then((data) => {
+      console.log("📦 Respuesta completa del backend:", data);
       setResultadoRiesgo(data.riesgo_autismo);
 
       const currentReportData = JSON.parse(localStorage.getItem('reportData')) || {};
