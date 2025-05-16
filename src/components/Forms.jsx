@@ -198,32 +198,41 @@ const Forms = ({ onFinish }) => {
       horaFin: fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
     }))
 
-    // Enviar al backend
-    fetch("http://127.0.0.1:8000/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ values: resumenTotal })
+  // Enviar al backend
+  fetch("http://127.0.0.1:8000/predict", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ values: resumenTotal })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("✅ Respuesta del backend:", data);
+      // Ejemplo: puedes guardar data.riesgo_autismo en contexto
+      // setResultadoRiesgo(data.riesgo_autismo);
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("✅ Respuesta del backend:", data);
-        // Ejemplo: puedes guardar data.riesgo_autismo en contexto
-        // setResultadoRiesgo(data.riesgo_autismo);
-      })
-      .catch((err) => {
-        console.error("❌ Error al enviar los datos:", err);
-      });
+    .catch((err) => {
+      console.error("❌ Error al enviar los datos:", err);
+    });
 
-    onFinish();
+  onFinish();
   };
 
   const handleChange = (qIndex, oIndex) => {
     const newResponses = [...responses];
-    newResponses[qIndex] = oIndex;
+    const question = questions[qIndex];
+
+    if (question.type === "yesno") {
+      // "Sí" = 1, "No" = 0
+      newResponses[qIndex] = oIndex === 0 ? 1 : 0;
+    } else {
+      newResponses[qIndex] = oIndex;
+    }
+
     setResponses(newResponses);
   };
+
 
   const handleNext = () => {
     if (currentQuestion === 0) {
@@ -246,6 +255,15 @@ const Forms = ({ onFinish }) => {
     const nextEndIndex = Math.min(questions.length, currentQuestion + 4);
     return questions.slice(prevIndex, nextEndIndex);
   };
+
+  const isSelected = (qIndex, oIndex) => {
+    const question = questions[qIndex];
+    if (question.type === "yesno") {
+      return responses[qIndex] === (oIndex === 0 ? 1 : 0);
+    }
+    return responses[qIndex] === oIndex;
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen justify-between">
@@ -288,12 +306,20 @@ const Forms = ({ onFinish }) => {
                       {questions[currentQuestion].options.map((option, oIndex) => (
                         <label
                           key={oIndex}
-                          className={`flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:border-blue-400 ${responses[currentQuestion] === oIndex ? 'bg-blue-100 border-blue-500' : 'border-gray-200'}`}
+                          className={`flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:border-blue-400 ${
+                            isSelected(currentQuestion, oIndex)
+                              ? 'bg-blue-100 border-blue-500'
+                              : 'border-gray-200'
+                          }`}
                         >
                           <input
                             type="radio"
                             name={`question-${currentQuestion}`}
-                            checked={responses[currentQuestion] === oIndex}
+                            checked={
+                              questions[currentQuestion].type === "yesno"
+                                ? responses[currentQuestion] === (oIndex === 0 ? 1 : 0)
+                                : responses[currentQuestion] === oIndex
+                            }
                             onChange={() => handleChange(currentQuestion, oIndex)}
                             className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                           />
