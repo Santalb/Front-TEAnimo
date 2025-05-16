@@ -1,16 +1,18 @@
 import React from 'react';
 
 const PercentageRisk = ({ percentage }) => {
+  const parsedPercentage = typeof percentage === 'number' && !isNaN(percentage) ? percentage : 0;
+
   let riskLevel = "Bajo";
   let color = "#22C55E"; // Verde
 
-  if (percentage > 30 && percentage <= 60) {
+  if (parsedPercentage > 30 && parsedPercentage <= 60) {
     riskLevel = "Moderado";
     color = "#F59E0B";
-  } else if (percentage > 60 && percentage <= 80) {
+  } else if (parsedPercentage > 60 && parsedPercentage <= 80) {
     riskLevel = "Significativo";
     color = "#EF4444";
-  } else if (percentage > 80) {
+  } else if (parsedPercentage > 80) {
     riskLevel = "Alto";
     color = "#7F1D1D";
   }
@@ -19,7 +21,7 @@ const PercentageRisk = ({ percentage }) => {
   const strokeWidth = 15;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percentage / 100) * circumference;
+  const offset = circumference - (parsedPercentage / 100) * circumference;
 
   return (
     <div className="bg-white rounded-2xl p-8 shadow-xl">
@@ -58,7 +60,7 @@ const PercentageRisk = ({ percentage }) => {
             fontWeight="bold"
             fill="#111827"
           >
-            {percentage.toFixed(2)}%
+            {parsedPercentage.toFixed(2)}%
           </text>
         </svg>
       </div>

@@ -15,7 +15,9 @@ import { Line } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const SocialSkillsChart = ({ data }) => {
-  const labels = Array.from({ length: data.length }, (_, i) => `P${i + 1}`);
+  const questionNumbers = [5, 10, 11, 13, 14];
+  const labels = questionNumbers.map((n) => `P${n}`);
+
 
   const chartOptions = {
     responsive: true,
@@ -31,8 +33,21 @@ const SocialSkillsChart = ({ data }) => {
     },
     plugins: {
       legend: {
-        position: 'top',
+        display: false,
       },
+      tooltip: {
+        displayColors: false,
+        callbacks: {
+          title: function (tooltipItems) {
+            const label = tooltipItems[0].label;
+            return `Pregunta ${label.replace('P', '')}:`;
+          },
+          label: function (context) {
+            const porcentaje = context.parsed.y;
+            return `${porcentaje}%`;
+          },
+        },
+      }
     },
   };
 

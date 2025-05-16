@@ -1,0 +1,22 @@
+export const questions = [
+  { id: 1, text: "¿Cuántos años tiene su hijo/a?", type: "input", options: [] },
+  { id: 2, text: "¿Cuál es el género de su hijo/a?", type: "select", options: ["Masculino", "Femenino"] },
+  { id: 3, text: "¿Tu hijo te mira cuando lo llamas por su nombre?", type: "default", options: ['Siempre', 'Usualmente', 'A veces', 'Raramente', 'Nunca'] },
+  { id: 4, text: "¿Qué tan fácil es para ti lograr contacto visual con tu hijo?", type: "default", options: ['Muy fácil', 'Bastante fácil', 'Bastante difícil', 'Muy difícil', 'Imposible'] },
+  { id: 5, text: "¿Tu hijo señala para indicar que quiere algo?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 6, text: "¿Tu hijo señala para compartir interés contigo?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 7, text: "¿Tu hijo finge?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 8, text: "¿Tu hijo sigue con la mirada hacia donde tú estás mirando?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 9, text: "¿Tu hijo muestra señales de querer consolar?", type: "default", options: ['Siempre', 'Usualmente', 'A veces', 'Raramente', 'Nunca'] },
+  { id: 10, text: "¿Cómo describirías las primeras palabras de tu hijo?", type: "default", options: ['Muy típicas', 'Bastante típicas', 'Ligeramente inusuales', 'Muy inusuales', 'Mi hijo no habla'] },
+  { id: 11, text: "¿Tu hijo usa gestos simples?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 12, text: "¿Tu hijo se queda mirando fijamente a la nada sin un propósito aparente?", type: "default", options: ['Muchas veces al día', 'Unas cuantas veces al día', 'Unas cuantas veces por semana', 'Menos de una vez por semana', 'Nunca'] },
+  { id: 13, text: "¿Su hijo/a tiene dificultades para hablar o expresar ideas claramente?", type: "yesno", options: ["No", "Sí"] },
+  { id: 14, text: "¿Su hijo/a tiene dificultades para aprender?", type: "yesno", options: ["No", "Sí"] },
+  { id: 15, text: "¿Su hijo/a tiene algún trastorno genético?", type: "yesno", options: ["No", "Sí"] },
+  { id: 16, text: "¿Su hijo/a presenta síntomas de depresión?", type: "yesno", options: ["No", "Sí"] },
+  { id: 17, text: "¿Ha notado un retraso en el desarrollo de su hijo/a?", type: "yesno", options: ["No", "Sí"] },
+  { id: 18, text: "¿Su hijo/a tiene problemas de comportamiento o sociales?", type: "yesno", options: ["No", "Sí"] },
+  { id: 19, text: "¿Su hijo/a muestra señales de ansiedad?", type: "yesno", options: ["No", "Sí"] },
+  { id: 20, text: "¿Alguien en su familia cercana ha sido diagnosticado con autismo?", type: "yesno", options: ["No", "Sí"] }
+];

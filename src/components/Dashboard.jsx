@@ -19,7 +19,6 @@ const Dashboard = () => {
   } = useContext(GlobalContext);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br p-8">
       <div className="max-w-7xl mx-auto space-y-8" id="dashboard-report">
 
         {/* Header */}
@@ -40,7 +39,7 @@ const Dashboard = () => {
         </div>
 
         {/* Graficos Base */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="dashboard-summary">
 
           <Qchat10Score />
 
@@ -61,7 +60,6 @@ const Dashboard = () => {
         <Footer />
       
       </div>
-    </div>
   );
 };
 

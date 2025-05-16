@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import Header from './shared/Header';
 import Footer from './shared/Footer';
+import CommunicativeSkillsChart from './dash-comp/CommunicativeSkillsChart';
+import SocialSkillsChart from './dash-comp/SocialSkillsChart';
 
 const Report = () => {
   const [responses, setResponses] = useState([]);
@@ -22,16 +25,6 @@ const Report = () => {
       setAcumComunicativas(storedData.acumComunicativas || []);
       setAcumSociales(storedData.acumSociales || []);
       setResultadoRiesgo(storedData.resultadoRiesgo || 0);
-      
-      /*
-      console.log("📄 cargado en nueva pestaña");
-      console.log("🔍 Resultado Riesgo TEA:", storedData.resultadoRiesgo);
-      console.log("responses:", storedData.responses);
-      console.log("questions:", storedData.questions);
-      console.log("qchatRespuestas:", storedData.qchatRespuestas);
-      console.log("acumComunicativas:", storedData.acumComunicativas);
-      console.log("acumSociales:", storedData.acumSociales);
-      */
     }
   }, []);
 
@@ -41,115 +34,136 @@ const Report = () => {
     }
   }, [questions, responses]);
 
-const generatePdfWithText = async () => {
-  const doc = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 10;
-  const colWidth = (pageWidth - margin * 2 - 10) / 2; // Espacio entre columnas
-  const lineHeight = 6;
-
-  // === PÁGINA 1: GRÁFICOS Y RESUMEN ===
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('RESUMEN DE RESULTADOS', pageWidth / 2, margin, { align: 'center' });
-
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(33, 33, 33);
-
-  // Puntaje Q-CHAT 10
-  doc.text('Puntaje Q-CHAT 10', margin, 20);
-  qchatRespuestas.forEach((val, i) => {
-    const x = margin + i * 12;
-    doc.setFillColor(val === 1 ? '#1976d2' : '#cfd8dc');
-    doc.circle(x, 30, 3, 'F');
-    doc.text(`P${i + 1}`, x - 3, 35);
+  const waitFor = (ms) => new Promise(res => setTimeout(res, ms));
+  const loadImage = (src) => new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve();
+    img.src = src;
   });
 
-  // Gráfico circular de riesgo (65%)
-  doc.setFillColor('#e0e0e0');
-  doc.circle(40, 60, 15, 'F');
-  doc.setFillColor('#1976d2');
-  doc.circle(40, 60, 15, 'FD');
-  doc.setTextColor('#000000');
-  doc.setFontSize(10);
-  doc.text('Porcentaje riesgo TEA', margin, 50);
-  doc.text(`${resultadoRiesgo.toFixed(2)}%`, 36, 63);
+  const generatePdfWithText = async () => {
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+    const lineHeight = 6;
+    const colWidth = (pageWidth - margin * 2 - 10) / 2;
 
-  // Gráfico de evolución comunicativas
-  doc.setDrawColor('#1976d2');
-  doc.setLineWidth(1);
-  doc.text('Evolución Habilidades Comunicativas', margin, 90);
-  acumComunicativas.forEach((val, idx) => {
-    const x1 = margin + idx * 10;
-    const y1 = 100 - val * 0.6;
-    const x2 = margin + (idx + 1) * 10;
-    const y2 = acumComunicativas[idx + 1] ? 100 - acumComunicativas[idx + 1] * 0.6 : y1;
-    doc.line(x1, y1, x2, y2);
-  });
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RESUMEN DE RESULTADOS', pageWidth / 2, margin, { align: 'center' });
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
 
-  // Gráfico de evolución sociales
-  doc.setDrawColor('#2e7d32');
-  doc.text('Evolución Habilidades Sociales', margin, 120);
-  acumSociales.forEach((val, idx) => {
-    const x1 = margin + idx * 10;
-    const y1 = 130 - val * 0.6;
-    const x2 = margin + (idx + 1) * 10;
-    const y2 = acumSociales[idx + 1] ? 130 - acumSociales[idx + 1] * 0.6 : y1;
-    doc.line(x1, y1, x2, y2);
-  });
+    const puntajeTotal = qchatRespuestas.reduce((a, b) => a + b, 0);
+    const col1Lines = [`Puntaje Q-CHAT 10: ${puntajeTotal}`, ...qchatRespuestas.map((v, i) => `A${i + 1}: ${v}`)];
+    const col2Lines = [
+      `Porcentaje de Riesgo: ${resultadoRiesgo.toFixed(2)}%`,
+      '',
+      'Porcentaje de Retraso de Habilidades:',
+      `- Comunicativas: ${acumComunicativas.at(-1) ?? 0}%`,
+      `- Interactivas Sociales: ${acumSociales.at(-1) ?? 0}%`,
+    ];
 
-  // === PÁGINA 2: PREGUNTAS Y RESPUESTAS ===
-  doc.addPage();
-  let yLeft = margin + 15;
-  let yRight = margin + 15;
+    let y = margin + 10;
+    let yMax = y;
 
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('INFORME DE RESPUESTAS', pageWidth / 2, margin, { align: 'center' });
+    col1Lines.forEach((line) => {
+      doc.text(line, margin, y);
+      y += lineHeight;
+    });
+    yMax = y;
 
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(33, 33, 33);
+    let y2 = margin + 10;
+    col2Lines.forEach((line) => {
+      doc.text(line, margin + colWidth + 10, y2);
+      y2 += lineHeight;
+    });
+    yMax = Math.max(yMax, y2);
 
-  questions.forEach((q, i) => {
-    const qText = `${i + 1}. ${q.text}`;
-    const aText = `Respuesta: ${q.options?.[responses[i]] ?? responses[i]}`;
-    const qLines = doc.splitTextToSize(qText, colWidth);
-    const aLines = doc.splitTextToSize(aText, colWidth);
-    const totalHeight = (qLines.length + aLines.length) * lineHeight + 2;
+    // GRAFICOS DE EVOLUCIÓN
+    const el1 = document.getElementById('com-chart');
+    const el2 = document.getElementById('soc-chart');
 
-    const isLeft = i % 2 === 0;
-    const x = isLeft ? margin : margin + colWidth + 10;
-    let y = isLeft ? yLeft : yRight;
+    if (el1 && el2) {
+      await waitFor(300);
 
-    if (y + totalHeight > pageHeight - margin) {
-      doc.addPage();
-      yLeft = margin + 10;
-      yRight = margin + 10;
-      y = isLeft ? yLeft : yRight;
+      const canvas1 = await html2canvas(el1, {
+        scale: window.devicePixelRatio * 2,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const canvas2 = await html2canvas(el2, {
+        scale: window.devicePixelRatio * 2,
+        useCORS: true,
+        backgroundColor: null,
+      });
+
+      const img1 = canvas1.toDataURL('image/png');
+      const img2 = canvas2.toDataURL('image/png');
+
+      await loadImage(img1);
+      await loadImage(img2);
+
+      const imgWidth = 180;
+      const imgHeightMax = 89;
+      const startX = (pageWidth - imgWidth) / 2;
+      let imgY = yMax + 10;
+
+      const remainingSpace1 = pageHeight - imgY - margin;
+      const imgHeight1 = Math.min(imgHeightMax, remainingSpace1 - 1);
+      doc.addImage(img1, 'PNG', startX, imgY, imgWidth, imgHeight1);
+
+      imgY += imgHeight1 + 10;
+
+      const remainingSpace2 = pageHeight - imgY - margin;
+      const imgHeight2 = Math.min(imgHeightMax, remainingSpace2 - 1);
+      doc.addImage(img2, 'PNG', startX, imgY, imgWidth, imgHeight2);
     }
 
-    qLines.forEach(line => {
-      doc.text(line, x, y);
-      y += lineHeight;
+    // SEGUNDA PAGINA: INFORME DE RESPUESTAS
+    doc.addPage();
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('INFORME DE RESPUESTAS', pageWidth / 2, margin, { align: 'center' });
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+
+    let yLeft = margin + 15;
+    let yRight = margin + 15;
+
+    questions.forEach((q, i) => {
+      const qText = `${i + 1}. ${q.text}`;
+      const aText = `Respuesta: ${q.options?.[responses[i]] ?? responses[i]}`;
+      const qLines = doc.splitTextToSize(qText, colWidth);
+      const aLines = doc.splitTextToSize(aText, colWidth);
+      const totalHeight = (qLines.length + aLines.length) * lineHeight + 2;
+
+      const isLeft = i % 2 === 0;
+      const x = isLeft ? margin : margin + colWidth + 10;
+      let y = isLeft ? yLeft : yRight;
+
+      if (y + totalHeight > pageHeight - margin) {
+        doc.addPage();
+        yLeft = margin + 10;
+        yRight = margin + 10;
+        y = isLeft ? yLeft : yRight;
+      }
+
+      [...qLines, ...aLines].forEach(line => {
+        doc.text(line, x, y);
+        y += lineHeight;
+      });
+
+      if (isLeft) yLeft = y + lineHeight;
+      else yRight = y + lineHeight;
     });
-    aLines.forEach(line => {
-      doc.text(line, x, y);
-      y += lineHeight;
-    });
 
-    if (isLeft) yLeft = y + lineHeight;
-    else yRight = y + lineHeight;
-  });
-
-  const blob = doc.output('blob');
-  const url = URL.createObjectURL(blob);
-  setPdfUrl(url);
-  return { doc, blob };
-};
-
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    setPdfUrl(url);
+    return { doc, blob };
+  };
 
   const handleSendEmail = async () => {
     if (!email || !email.includes('@')) {
@@ -174,7 +188,25 @@ const generatePdfWithText = async () => {
   };
 
   return (
-    <div className="p-8 space-y-6 max-w-6xl mx-auto">
+    <div className="p-4 space-y-6 max-w-6xl mx-auto">
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          opacity: 0,
+          zIndex: -1,
+          pointerEvents: 'none'
+        }}
+      >
+        <div id="com-chart" style={{ width: '600px', height: '390px' }}>
+          <CommunicativeSkillsChart data={acumComunicativas} />
+        </div>
+        <div id="soc-chart" style={{ width: '600px', height: '390px' }}>
+          <SocialSkillsChart data={acumSociales} />
+        </div>
+      </div>
 
       <Header
         title="Informe de Respuestas"
@@ -194,7 +226,6 @@ const generatePdfWithText = async () => {
       )}
 
       <Footer />
-
     </div>
   );
 };
