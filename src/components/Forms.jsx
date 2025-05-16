@@ -171,7 +171,6 @@ const Forms = ({ onFinish }) => {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log("📦 Respuesta completa del backend:", data);
       setResultadoRiesgo(data.riesgo_autismo);
 
       const currentReportData = JSON.parse(localStorage.getItem('reportData')) || {};
