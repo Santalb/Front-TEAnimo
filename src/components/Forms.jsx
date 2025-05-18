@@ -39,20 +39,20 @@ const Forms = ({ onFinish }) => {
     let sociales = 0;
     let comunicativas = 0;
 
-    if (resps[4] >= 2) sociales += 20;
-    if (resps[9] >= 2) sociales += 20;
-    if (resps[10] >= 2) sociales += 20;
-    if (resps[12] === 1) sociales += 25;
-    if (resps[13] === 1) sociales += 15;
+    if (resps[4] >= 2) comunicativas += 20;
+    if (resps[9] >= 2) comunicativas += 20;
+    if (resps[10] >= 2) comunicativas += 20;
+    if (resps[12] === 1) comunicativas += 25;
+    if (resps[13] === 1) comunicativas += 15;
 
-    if (resps[2] >= 2) comunicativas += 10;
-    if (resps[3] >= 2) comunicativas += 10;
-    if (resps[5] >= 2) comunicativas += 10;
-    if (resps[6] >= 2) comunicativas += 15;
-    if (resps[7] >= 2) comunicativas += 15;
-    if (resps[8] >= 2) comunicativas += 15;
-    if (resps[17] === 1) comunicativas += 20;
-    if (resps[18] === 1) comunicativas += 5;
+    if (resps[2] >= 2) sociales += 10;
+    if (resps[3] >= 2) sociales += 10;
+    if (resps[5] >= 2) sociales += 10;
+    if (resps[6] >= 2) sociales += 15;
+    if (resps[7] >= 2) sociales += 15;
+    if (resps[8] >= 2) sociales += 15;
+    if (resps[17] === 1) sociales += 20;
+    if (resps[18] === 1) sociales += 5;
 
     return {
       habilidadesSociales: sociales,
@@ -82,43 +82,43 @@ const Forms = ({ onFinish }) => {
     let socTotal = 0;
 
     // Comunicación
-    if (responses[2] >= 2) comTotal += 10;
-    acumComunicativas.push(comTotal);
-    if (responses[3] >= 2) comTotal += 10;
-    acumComunicativas.push(comTotal);
-    if (responses[5] >= 2) comTotal += 10;
-    acumComunicativas.push(comTotal);
-    if (responses[6] >= 2) comTotal += 15;
-    acumComunicativas.push(comTotal);
-    if (responses[7] >= 2) comTotal += 15;
-    acumComunicativas.push(comTotal);
-    if (responses[8] >= 2) comTotal += 15;
-    acumComunicativas.push(comTotal);
-    if (responses[17] === 1) comTotal += 20;
-    acumComunicativas.push(comTotal);
-    if (responses[18] === 1) comTotal += 5;
-    acumComunicativas.push(comTotal);
+    if (responses[2] >= 2) socTotal += 10;
+    acumSociales.push(socTotal);
+    if (responses[3] >= 2) socTotal += 10;
+    acumSociales.push(socTotal);
+    if (responses[5] >= 2) socTotal += 10;
+    acumSociales.push(socTotal);
+    if (responses[6] >= 2) socTotal += 15;
+    acumSociales.push(socTotal);
+    if (responses[7] >= 2) socTotal += 15;
+    acumSociales.push(socTotal);
+    if (responses[8] >= 2) socTotal += 15;
+    acumSociales.push(socTotal);
+    if (responses[17] === 1) socTotal += 20;
+    acumSociales.push(socTotal);
+    if (responses[18] === 1) socTotal += 5;
+    acumSociales.push(socTotal);
 
     // Sociales
-    if (responses[4] >= 2) socTotal += 20;
-    acumSociales.push(socTotal);
-    if (responses[9] >= 2) socTotal += 20;
-    acumSociales.push(socTotal);
-    if (responses[10] >= 2) socTotal += 20;
-    acumSociales.push(socTotal);
-    if (responses[12] === 1) socTotal += 25;
-    acumSociales.push(socTotal);
-    if (responses[13] === 1) socTotal += 15;
-    acumSociales.push(socTotal);
+    if (responses[4] >= 2) comTotal += 20;
+    acumComunicativas.push(comTotal);
+    if (responses[9] >= 2) comTotal += 20;
+    acumComunicativas.push(comTotal);
+    if (responses[10] >= 2) comTotal += 20;
+    acumComunicativas.push(comTotal);
+    if (responses[12] === 1) comTotal += 25;
+    acumComunicativas.push(comTotal);
+    if (responses[13] === 1) comTotal += 15;
+    acumComunicativas.push(comTotal);
 
     const edad = responses[0];
     const genero = responses[1] === 0 ? 1 : 0; // Masculino = 1, Femenino = 0
     const preguntasExtras = responses.slice(12);
 
-    const evolComunicativas = [responses[2], responses[3], responses[5], responses[6], responses[7], responses[8], responses[17], responses[18]]
+    const evolSociales = [responses[2], responses[3], responses[5], responses[6], responses[7], responses[8], responses[17], responses[18]]
       .map((r, idx) => idx <= 5 ? (r >= 2 ? 1 : 0) : (r === 0 ? 1 : 0));
 
-    const evolSociales = [responses[4], responses[9], responses[10], responses[12], responses[13]]
+    const evolComunicativas = [responses[4], responses[9], responses[10], responses[12], responses[13]]
       .map((r, idx) => idx <= 2 ? (r >= 2 ? 1 : 0) : (r === 0 ? 1 : 0));
 
     const resumenTotal = [
@@ -127,8 +127,8 @@ const Forms = ({ onFinish }) => {
       ...qchatRespuestas,
       qchatScore,
       ...preguntasExtras,
-      comTotal,
       socTotal,
+      comTotal,
       horaInicio?.toLocaleString("es-PE", { timeZone: "America/Lima" }) || '',
       fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
     ];

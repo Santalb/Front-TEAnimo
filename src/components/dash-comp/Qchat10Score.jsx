@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { motion } from 'framer-motion';
+import { Info } from 'lucide-react';
 import { GlobalContext } from '../../contexts/GlobalContext';
 
 const Qchat10Score = () => {
@@ -7,12 +8,11 @@ const Qchat10Score = () => {
   const score = qchatRespuestas.reduce((acc, val) => acc + val, 0);
   const total = qchatRespuestas.length;
 
-  // Padding visual horizontal
   const paddingX = 5;
 
   const puntos = qchatRespuestas.map((_, i) => {
     const acc = qchatRespuestas.slice(0, i + 1).reduce((a, v) => a + v, 0);
-    const x = paddingX + (i / (total - 1)) * (100 - 2 * paddingX); // ahora en rango 5%–95%
+    const x = paddingX + (i / (total - 1)) * (100 - 2 * paddingX);
     const y = 100 - acc * 10;
     return { x, y };
   });
@@ -26,14 +26,30 @@ const Qchat10Score = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="flex justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Puntaje Q-CHAT 10</h2>
-        <span className="bg-blue-600 text-white px-4 py-1 rounded-xl font-bold">{score}/10</span>
+      {/* Encabezado con Info + Score */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-gray-800">Puntaje Q-CHAT 10</h2>
+          <span
+            title="El Q-CHAT 10 evalúa señales tempranas relacionadas al autismo mediante 10 preguntas clave. Este puntaje refleja la cantidad de respuestas indicativas."
+            className="cursor-pointer text-gray-500"
+          >
+            <Info className="w-5 h-5" />
+          </span>
+        </div>
+        <span className="bg-blue-600 text-white px-4 py-1 rounded-xl font-bold text-sm">
+          {score}/10
+        </span>
       </div>
 
+      {/* Subtítulo explicativo */}
+      <p className="text-sm text-gray-500 mb-4" style={{ textAlign: 'justify' }}>
+        Basado en 10 preguntas de observación temprana. Un puntaje más alto puede indicar mayor número de conductas asociadas al riesgo.
+      </p>
+
+      {/* Gráfico */}
       <div className="h-64 relative">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 110" preserveAspectRatio="none">
-          {/* Cuadrícula horizontal */}
           {[25, 50, 75].map((y) => (
             <line
               key={y}
@@ -46,7 +62,6 @@ const Qchat10Score = () => {
             />
           ))}
 
-          {/* Línea */}
           <motion.path
             d={pathD}
             fill="none"
@@ -59,7 +74,6 @@ const Qchat10Score = () => {
             transition={{ duration: 1.2, ease: "easeOut" }}
           />
 
-          {/* Puntos */}
           {puntos.map((p, i) => (
             <motion.circle
               key={i}
@@ -74,7 +88,6 @@ const Qchat10Score = () => {
             />
           ))}
 
-          {/* Etiquetas A1–A10 alineadas */}
           {puntos.map((p, i) => (
             <text
               key={`label-${i}`}

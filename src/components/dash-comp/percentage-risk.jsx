@@ -1,4 +1,5 @@
 import React from 'react';
+import { Info } from 'lucide-react';
 
 const PercentageRisk = ({ percentage }) => {
   const parsedPercentage = typeof percentage === 'number' && !isNaN(percentage) ? percentage : 0;
@@ -17,19 +18,27 @@ const PercentageRisk = ({ percentage }) => {
     color = "#7F1D1D";
   }
 
-  const size = 180;
-  const strokeWidth = 15;
+  const size = 160;
+  const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (parsedPercentage / 100) * circumference;
 
   return (
-    <div className="bg-white rounded-2xl p-8 shadow-xl">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-        Porcentaje riesgo TEA
-      </h2>
+    <div className="bg-white rounded-2xl p-8 shadow-xl min-h-[360px] flex flex-col justify-between">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Porcentaje riesgo TEA
+        </h2>
+        <span
+          title="Este porcentaje es una estimación basada en el modelo y no sustituye una evaluación clínica profesional."
+          className="cursor-pointer text-gray-500"
+        >
+          <Info className="w-5 h-5" />
+        </span>
+      </div>
 
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-2">
         <svg width={size} height={size}>
           <circle
             cx={size / 2}
@@ -56,7 +65,7 @@ const PercentageRisk = ({ percentage }) => {
             y="50%"
             textAnchor="middle"
             dy="0.3em"
-            fontSize="24"
+            fontSize="22"
             fontWeight="bold"
             fill="#111827"
           >
@@ -72,8 +81,8 @@ const PercentageRisk = ({ percentage }) => {
         >
           Riesgo {riskLevel}
         </div>
-        <p className="text-sm text-gray-600">
-          Se recomienda evaluación profesional detallada
+        <p className="text-sm text-gray-600 px-2" style={{ textAlign: 'justify' }}>
+          Se recomienda evaluación profesional detallada para confirmar el resultado y determinar el tipo de apoyo necesario.
         </p>
       </div>
     </div>
