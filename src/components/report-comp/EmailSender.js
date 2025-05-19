@@ -3,7 +3,7 @@ export const sendPdfToEmail = async (email, blob) => {
   formData.append('file', blob, 'informe.pdf');
   formData.append('destinatario', email);
 
-  const res = await fetch('http://localhost:8000/simular-upload-blob/', {
+  const res = await fetch('http://localhost:8000/enviar-pdf', {
     method: 'POST',
     body: formData,
   });
