@@ -43,7 +43,7 @@ const Dashboard = () => {
 
           <Qchat10Score />
 
-          <PercentageRisk percentage={resultadoRiesgo} />
+          <PercentageRisk resultado={resultadoRiesgo[resultadoRiesgo.length - 1]} />
 
           <SkillsDelay
            communicativeSkills={porcentajeComunicativas}

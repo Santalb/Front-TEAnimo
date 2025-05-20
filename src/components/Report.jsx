@@ -11,9 +11,14 @@ const Report = () => {
   const [qchatRespuestas, setQchatRespuestas] = useState([]);
   const [acumComunicativas, setAcumComunicativas] = useState([]);
   const [acumSociales, setAcumSociales] = useState([]);
-  const [resultadoRiesgo, setResultadoRiesgo] = useState(0);
+  const [resultadoRiesgo, setResultadoRiesgo] = useState([]);
   const [email, setEmail] = useState('');
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [iframeKey, setIframeKey] = useState(0);
+
+  const [enviandoCorreo, setEnviandoCorreo] = useState(false);
+  const [mensajeCorreo, setMensajeCorreo] = useState('');
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("reportData"));
@@ -23,7 +28,7 @@ const Report = () => {
       setQchatRespuestas(storedData.qchatRespuestas || []);
       setAcumComunicativas(storedData.acumComunicativas || []);
       setAcumSociales(storedData.acumSociales || []);
-      setResultadoRiesgo(storedData.resultadoRiesgo || 0);
+      setResultadoRiesgo(storedData.resultadoRiesgo || []);
     }
   }, []);
 
@@ -34,7 +39,10 @@ const Report = () => {
   }, [questions, responses]);
 
   const handleGeneratePdf = async () => {
-    const { blob } = await generatePdfWithText({
+    if (pdfUrl) {
+      URL.revokeObjectURL(pdfUrl); // 
+    }
+    const { blob, url } = await generatePdfWithText({
       questions,
       responses,
       qchatRespuestas,
@@ -42,8 +50,9 @@ const Report = () => {
       acumSociales,
       resultadoRiesgo
     });
-    const url = URL.createObjectURL(blob);
     setPdfUrl(url);
+    setPdfFile(blob);
+    setIframeKey(prev => prev + 1);
   };
 
   const handleSendEmail = async () => {
@@ -51,6 +60,10 @@ const Report = () => {
       alert('Por favor, ingresa un correo válido.');
       return;
     }
+
+    setEnviandoCorreo(true);
+    setMensajeCorreo("Enviando correo...");
+
     const { blob } = await generatePdfWithText({
       questions,
       responses,
@@ -59,12 +72,38 @@ const Report = () => {
       acumSociales,
       resultadoRiesgo
     });
+
     const { ok, result } = await sendPdfToEmail(email, blob);
-    alert(ok ? result.mensaje : 'Error en el envío: ' + result.error);
+
+    if (ok) {
+      setMensajeCorreo(`Correo enviado correctamente a ${email}`);
+      setTimeout(() => {
+        setEnviandoCorreo(false);
+        setMensajeCorreo('');
+        setEmail('');
+      }, 1500); // modal desaparece a los 1.5s
+    } else {
+      setMensajeCorreo("Error al enviar el correo: " + result.error);
+      setTimeout(() => {
+        setEnviandoCorreo(false);
+        setMensajeCorreo('');
+      }, 3000);
+    }
   };
 
   return (
     <div className="p-4 space-y-6 max-w-6xl mx-auto">
+
+      {/* Modal de envío de correo */}
+      {enviandoCorreo && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-sm text-center">
+            <h3 className="text-lg font-semibold mb-2">Estado del envío</h3>
+            <p className="text-gray-700">{mensajeCorreo}</p>
+          </div>
+        </div>
+      )}
+
       <ChartRenderHidden
         acumComunicativas={acumComunicativas}
         acumSociales={acumSociales}
@@ -79,13 +118,22 @@ const Report = () => {
         showButton
         buttonText="Enviar al correo"
         onButtonClick={handleSendEmail}
+        disabled={enviandoCorreo}
       />
 
       {pdfUrl && (
-        <div className="mt-6 border rounded-xl overflow-hidden shadow">
-          <iframe src={pdfUrl} title="Vista previa del informe" className="w-full h-[800px]" />
-        </div>
+        <>
+          <div className="mt-6 border rounded-xl overflow-hidden shadow">
+            <iframe
+              key={pdfUrl} // importante para que React lo vuelva a renderizar
+              src={pdfUrl}
+              title="Vista previa del informe"
+              className="w-full h-[800px]"
+            />
+          </div>
+        </>
       )}
+
 
       <Footer />
     </div>

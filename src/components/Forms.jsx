@@ -171,11 +171,23 @@ const Forms = ({ onFinish }) => {
   })
     .then((res) => res.json())
     .then((data) => {
-      setResultadoRiesgo(data.riesgo_autismo);
+      const nuevaEntrada = [data.clase_predicha, data.riesgo_autismo];
 
+      // Guarda en el estado del contexto global como un arreglo de pares
+      setResultadoRiesgo(prev => [...prev, nuevaEntrada]);
+
+      // Manejo en localStorage
       const currentReportData = JSON.parse(localStorage.getItem('reportData')) || {};
-      currentReportData.resultadoRiesgo = data.riesgo_autismo;
+      const prevResultados = currentReportData.resultadoRiesgo || [];
+
+      const nuevosResultados = [...prevResultados, nuevaEntrada];
+      currentReportData.resultadoRiesgo = nuevosResultados;
+
       localStorage.setItem('reportData', JSON.stringify(currentReportData));
+
+      // Log de verificación
+      console.log("Nuevo resultado almacenado [clase, riesgo]:", nuevaEntrada);
+      console.log("Todos los resultados acumulados:", nuevosResultados);
     })
     .catch((err) => {
       console.error("Error al enviar los datos:", err);

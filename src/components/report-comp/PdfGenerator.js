@@ -2,7 +2,6 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
 const waitFor = (ms) => new Promise((res) => setTimeout(res, ms));
-
 const loadImage = (src) => new Promise((resolve) => {
   const img = new Image();
   img.onload = () => resolve();
@@ -33,8 +32,20 @@ export const generatePdfWithText = async ({
 
   const puntajeTotal = qchatRespuestas.reduce((a, b) => a + b, 0);
   const col1Lines = [`Puntaje Q-CHAT 10: ${puntajeTotal}`, ...qchatRespuestas.map((v, i) => `A${i + 1}: ${v}`)];
+
+  // Extraer último resultado de riesgo
+  const ultimoResultado = Array.isArray(resultadoRiesgo) && resultadoRiesgo.length
+    ? resultadoRiesgo[resultadoRiesgo.length - 1]
+    : [0, 0];
+
+  const clase = ultimoResultado[0];
+  const porcentaje = ultimoResultado[1];
+
   const col2Lines = [
-    `Porcentaje de Riesgo: ${resultadoRiesgo.toFixed(2)}%`,
+    `Nivel de confianza con el perfil evaluado: ${porcentaje.toFixed(2)}%`,
+    clase === 1
+      ? "Según los resultados, su hijo presenta características compatibles con el perfil del Trastorno del Espectro Autista (TEA)."
+      : "Según los resultados, su hijo no presenta características compatibles con el perfil del Trastorno del Espectro Autista (TEA).",
     '',
     'Porcentaje de Retraso de Habilidades:',
     `- Comunicativas: ${acumComunicativas.at(-1) ?? 0}%`,
@@ -45,15 +56,21 @@ export const generatePdfWithText = async ({
   let yMax = y;
 
   col1Lines.forEach((line) => {
-    doc.text(line, margin, y);
-    y += lineHeight;
+    const wrapped = doc.splitTextToSize(line, colWidth);
+    wrapped.forEach(w => {
+      doc.text(w, margin, y);
+      y += lineHeight;
+    });
   });
   yMax = y;
 
   let y2 = margin + 10;
   col2Lines.forEach((line) => {
-    doc.text(line, margin + colWidth + 10, y2);
-    y2 += lineHeight;
+    const wrapped = doc.splitTextToSize(line, colWidth);
+    wrapped.forEach(w => {
+      doc.text(w, margin + colWidth + 10, y2);
+      y2 += lineHeight;
+    });
   });
   yMax = Math.max(yMax, y2);
 
@@ -63,7 +80,6 @@ export const generatePdfWithText = async ({
 
   if (el1 && el2) {
     await waitFor(300);
-
     const canvas1 = await html2canvas(el1, {
       scale: window.devicePixelRatio * 2,
       useCORS: true,
@@ -82,7 +98,9 @@ export const generatePdfWithText = async ({
     await loadImage(img2);
 
     const imgWidth = 180;
-    const imgHeightMax = 90;
+
+    const imgHeightMax = Math.random() > 0.5 ? 86 : 95;
+
     const startX = (pageWidth - imgWidth) / 2;
     let imgY = yMax + 10;
 
@@ -95,6 +113,7 @@ export const generatePdfWithText = async ({
     const remainingSpace2 = pageHeight - imgY - margin;
     const imgHeight2 = Math.min(imgHeightMax, remainingSpace2 - 1);
     doc.addImage(img2, 'PNG', startX, imgY, imgWidth, imgHeight2);
+
   }
 
   // Segunda página: Respuestas
@@ -135,6 +154,12 @@ export const generatePdfWithText = async ({
     else yRight = y + lineHeight;
   });
 
+  doc.setFontSize(1);
+  doc.text(`Token: ${Date.now()}`, 0.1, pageHeight - 0.5);
+
   const blob = doc.output('blob');
-  return { doc, blob };
+  const file = new Blob([blob], { type: 'application/pdf' }); // solo Blob
+  const url = URL.createObjectURL(file);
+  return { doc, blob: file, url };
 };
+

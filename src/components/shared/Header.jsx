@@ -10,6 +10,7 @@ const Header = ({
   showInput = false,
   inputValue = '',
   onInputChange,
+  disabled = false, 
 }) => {
   return (
     <header className="flex justify-between items-center bg-white rounded-2xl p-8 shadow-xl flex-wrap gap-4">
@@ -34,7 +35,12 @@ const Header = ({
         {showButton && (
           <button
             onClick={onButtonClick}
-            className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow"
+            disabled={disabled}
+            className={`flex items-center gap-2 px-5 py-2 rounded-lg shadow transition 
+              ${disabled 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
           >
             {buttonText}
             {buttonText.toLowerCase().includes('informe') && <ExternalLink size={18} />}
