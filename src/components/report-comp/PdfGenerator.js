@@ -81,25 +81,25 @@ export const generatePdfWithText = async ({
   if (el1 && el2) {
     await waitFor(300);
     const canvas1 = await html2canvas(el1, {
-      scale: window.devicePixelRatio * 2,
+      scale: 1.2,
       useCORS: true,
       backgroundColor: null,
     });
     const canvas2 = await html2canvas(el2, {
-      scale: window.devicePixelRatio * 2,
+      scale: 1.2,
       useCORS: true,
       backgroundColor: null,
     });
 
-    const img1 = canvas1.toDataURL('image/png');
-    const img2 = canvas2.toDataURL('image/png');
+    const img1 = canvas1.toDataURL('image/jpeg', 0.8);
+    const img2 = canvas2.toDataURL('image/jpeg', 0.8);
 
     await loadImage(img1);
     await loadImage(img2);
 
     const imgWidth = 180;
 
-    const imgHeightMax = Math.random() > 0.5 ? 86 : 95;
+    const imgHeightMax = Math.random() > 0.5 ? 87 : 95;
 
     const startX = (pageWidth - imgWidth) / 2;
     let imgY = yMax + 10;
