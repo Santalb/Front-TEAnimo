@@ -14,10 +14,10 @@ const ChartRenderHidden = ({ acumComunicativas, acumSociales }) => (
       pointerEvents: 'none'
     }}
   >
-    <div id="com-chart" style={{ width: '600px', height: '390px' }}>
+    <div id="com-chart" style={{ width: '600px', height: '410px' }}>
       <CommunicativeSkillsChart data={acumComunicativas} />
     </div>
-    <div id="soc-chart" style={{ width: '600px', height: '390px' }}>
+    <div id="soc-chart" style={{ width: '600px', height: '410px' }}>
       <SocialSkillsChart data={acumSociales} />
     </div>
   </div>

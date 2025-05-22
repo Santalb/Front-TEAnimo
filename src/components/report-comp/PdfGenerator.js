@@ -33,7 +33,6 @@ export const generatePdfWithText = async ({
   const puntajeTotal = qchatRespuestas.reduce((a, b) => a + b, 0);
   const col1Lines = [`Puntaje Q-CHAT 10: ${puntajeTotal}`, ...qchatRespuestas.map((v, i) => `A${i + 1}: ${v}`)];
 
-  // Extraer último resultado de riesgo
   const ultimoResultado = Array.isArray(resultadoRiesgo) && resultadoRiesgo.length
     ? resultadoRiesgo[resultadoRiesgo.length - 1]
     : [0, 0];
@@ -74,21 +73,21 @@ export const generatePdfWithText = async ({
   });
   yMax = Math.max(yMax, y2);
 
-  // Gráficos
   const el1 = document.getElementById('com-chart');
   const el2 = document.getElementById('soc-chart');
 
   if (el1 && el2) {
-    await waitFor(300);
+    await waitFor(800);
+
     const canvas1 = await html2canvas(el1, {
       scale: 1.2,
       useCORS: true,
-      backgroundColor: null,
+      backgroundColor: '#ffffff',
     });
     const canvas2 = await html2canvas(el2, {
       scale: 1.2,
       useCORS: true,
-      backgroundColor: null,
+      backgroundColor: '#ffffff',
     });
 
     const img1 = canvas1.toDataURL('image/jpeg', 0.8);
@@ -98,29 +97,26 @@ export const generatePdfWithText = async ({
     await loadImage(img2);
 
     const imgWidth = 180;
-
-    const imgHeightMax = Math.random() > 0.5 ? 87 : 95;
-
+    const imgHeightMax = 90;
     const startX = (pageWidth - imgWidth) / 2;
     let imgY = yMax + 10;
 
     const remainingSpace1 = pageHeight - imgY - margin;
     const imgHeight1 = Math.min(imgHeightMax, remainingSpace1 - 1);
-    doc.addImage(img1, 'PNG', startX, imgY, imgWidth, imgHeight1);
+    doc.addImage(img1, 'JPEG', startX, imgY, imgWidth, imgHeight1);
 
     imgY += imgHeight1 + 10;
 
     const remainingSpace2 = pageHeight - imgY - margin;
     const imgHeight2 = Math.min(imgHeightMax, remainingSpace2 - 1);
-    doc.addImage(img2, 'PNG', startX, imgY, imgWidth, imgHeight2);
-
+    doc.addImage(img2, 'JPEG', startX, imgY, imgWidth, imgHeight2);
   }
 
-  // Segunda página: Respuestas
   doc.addPage();
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
   doc.text('INFORME DE RESPUESTAS', pageWidth / 2, margin, { align: 'center' });
+
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
 
@@ -158,8 +154,7 @@ export const generatePdfWithText = async ({
   doc.text(`Token: ${Date.now()}`, 0.1, pageHeight - 0.5);
 
   const blob = doc.output('blob');
-  const file = new Blob([blob], { type: 'application/pdf' }); // solo Blob
+  const file = new Blob([blob], { type: 'application/pdf' });
   const url = URL.createObjectURL(file);
   return { doc, blob: file, url };
 };
-

@@ -14,9 +14,6 @@ const Report = () => {
   const [resultadoRiesgo, setResultadoRiesgo] = useState([]);
   const [email, setEmail] = useState('');
   const [pdfUrl, setPdfUrl] = useState(null);
-  const [pdfFile, setPdfFile] = useState(null);
-  const [iframeKey, setIframeKey] = useState(0);
-
   const [enviandoCorreo, setEnviandoCorreo] = useState(false);
   const [mensajeCorreo, setMensajeCorreo] = useState('');
 
@@ -40,8 +37,9 @@ const Report = () => {
 
   const handleGeneratePdf = async () => {
     if (pdfUrl) {
-      URL.revokeObjectURL(pdfUrl); // 
+      URL.revokeObjectURL(pdfUrl); // Limpiar url anterior
     }
+
     const { blob, url } = await generatePdfWithText({
       questions,
       responses,
@@ -50,9 +48,8 @@ const Report = () => {
       acumSociales,
       resultadoRiesgo
     });
+
     setPdfUrl(url);
-    setPdfFile(blob);
-    setIframeKey(prev => prev + 1);
   };
 
   const handleSendEmail = async () => {
@@ -81,7 +78,7 @@ const Report = () => {
         setEnviandoCorreo(false);
         setMensajeCorreo('');
         setEmail('');
-      }, 1500); // modal desaparece a los 1.5s
+      }, 1500);
     } else {
       setMensajeCorreo("Error al enviar el correo: " + result.error);
       setTimeout(() => {
@@ -90,6 +87,15 @@ const Report = () => {
       }, 3000);
     }
   };
+
+  // Cleanup: liberar URL al desmontar
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [pdfUrl]);
 
   return (
     <div className="p-4 space-y-6 max-w-6xl mx-auto">
@@ -122,18 +128,15 @@ const Report = () => {
       />
 
       {pdfUrl && (
-        <>
-          <div className="mt-6 border rounded-xl overflow-hidden shadow">
-            <iframe
-              key={pdfUrl} // importante para que React lo vuelva a renderizar
-              src={pdfUrl}
-              title="Vista previa del informe"
-              className="w-full h-[800px]"
-            />
-          </div>
-        </>
+        <div className="mt-6 border rounded-xl overflow-hidden shadow">
+          <iframe
+            key={pdfUrl}
+            src={pdfUrl}
+            title="Vista previa del informe"
+            className="w-full h-[800px]"
+          />
+        </div>
       )}
-
 
       <Footer />
     </div>
