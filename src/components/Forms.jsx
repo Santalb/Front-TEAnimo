@@ -293,7 +293,7 @@ const Forms = ({ onFinish }) => {
           />
         </div>
 
-        <Footer />
+
       </div>
     </div>
   );

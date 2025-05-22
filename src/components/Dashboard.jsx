@@ -56,8 +56,6 @@ const Dashboard = () => {
         <CommunicativeSkillsChart data={acumComunicativas} />
         <SocialSkillsChart data={acumSociales} />
 
-        {/* Footer */}
-        <Footer />
       
       </div>
   );

@@ -41,12 +41,15 @@ export const generatePdfWithText = async ({
   const porcentaje = ultimoResultado[1];
 
   const col2Lines = [
-    `Nivel de confianza con el perfil evaluado: ${porcentaje.toFixed(2)}%`,
     clase === 1
-      ? "Según los resultados, su hijo presenta características compatibles con el perfil del Trastorno del Espectro Autista (TEA)."
-      : "Según los resultados, su hijo no presenta características compatibles con el perfil del Trastorno del Espectro Autista (TEA).",
+      ? "Según los resultados, su hijo/a SI presenta rasgos compatibles con el Trastorno del Espectro Autista (TEA)."
+      : "Según los resultados, su hijo/a NO presenta rasgos compatibles con el Trastorno del Espectro Autista (TEA).",
     '',
-    'Porcentaje de Retraso de Habilidades:',
+    clase === 1
+      ? `Nivel de confianza en la detección de los rasgos de autismo: ${porcentaje.toFixed(2)}%`
+      : `Nivel de confianza en la detección de los rasgos neurotípicos: ${porcentaje.toFixed(2)}%`,
+    '',
+    'Porcentaje estimado de dificultad en habilidades:',
     `- Comunicativas: ${acumComunicativas.at(-1) ?? 0}%`,
     `- Interactivas Sociales: ${acumSociales.at(-1) ?? 0}%`,
   ];

@@ -3,8 +3,19 @@ import React from 'react';
 const QuestionCard = ({ question, response, onChange }) => {
   return (
     <div className="mb-8">
-      <h3 className="text-xl text-gray-700 mb-4">{question.text}</h3>
+      {/* Pregunta principal */}
+      <h3 className="text-xl text-gray-700">
+        {question.text}
+      </h3>
 
+      {/* Ejemplo o espaciado */}
+      {question.example ? (
+        <p className="text-sm italic text-gray-500 mb-4 lg:mb-6">{question.example}</p>
+      ) : (
+        <div className="mb-5"></div>
+      )}
+
+      {/* Entrada numérica para edad */}
       {question.type === 'input' ? (
         <input
           type="number"

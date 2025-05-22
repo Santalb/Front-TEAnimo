@@ -138,7 +138,7 @@ const Report = () => {
         </div>
       )}
 
-      <Footer />
+
     </div>
   );
 };
