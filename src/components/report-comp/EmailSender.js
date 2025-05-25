@@ -3,7 +3,13 @@ export const sendPdfToEmail = async (email, blob) => {
   formData.append('file', blob, 'informe_evaluacion.pdf');
   formData.append('destinatario', email);
 
-  const res = await fetch('http://localhost:8000/enviar-pdf', {
+  // Detecta si estás en localhost (desarrollo) o producción
+  const isLocalhost = window.location.hostname === 'localhost';
+  const baseURL = isLocalhost
+    ? 'http://localhost:8000'
+    : 'https://tu-api.railway.app'; // 🔁 reemplaza con tu dominio real
+
+  const res = await fetch(`${baseURL}/enviar-pdf`, {
     method: 'POST',
     body: formData,
   });

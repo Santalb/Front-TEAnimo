@@ -162,13 +162,19 @@ const Forms = ({ onFinish }) => {
       horaFin: fin.toLocaleString("es-PE", { timeZone: "America/Lima" })
     }))
 
-  fetch("http://127.0.0.1:8000/predict", {
+  const isLocal = window.location.hostname === 'localhost';
+  const baseURL = isLocal
+    ? 'http://127.0.0.1:8000'
+    : 'https://tu-backend-api.railway.app'; 
+
+  fetch(`${baseURL}/predict`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ values: resumenTotal })
   })
+
     .then((res) => res.json())
     .then((data) => {
       const nuevaEntrada = [data.clase_predicha, data.riesgo_autismo];
